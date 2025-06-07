@@ -25,7 +25,7 @@
     --muted: 220 15% 15%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 271 76% 53%;
+    --accent: 220 25% 25%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 84% 60%;
@@ -38,7 +38,6 @@
     --radius: 0.5rem;
 
     --neon-blue: 217 91% 60%;
-    --neon-purple: 271 76% 53%;
     --dark-bg: 220 15% 8%;
     --card-bg: 220 15% 12%;
   }
@@ -61,7 +60,7 @@
   }
   
   .gradient-border {
-    background: linear-gradient(45deg, hsl(var(--neon-blue)), hsl(var(--neon-purple)));
+    background: linear-gradient(45deg, hsl(var(--neon-blue)), hsl(var(--accent)));
     padding: 2px;
     border-radius: 8px;
   }

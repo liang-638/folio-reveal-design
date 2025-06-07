@@ -4,11 +4,13 @@ import CoverPage from '../components/CoverPage';
 import Sidebar from '../components/Sidebar';
 import InfoSection from '../components/InfoSection';
 import WorkSection from '../components/WorkSection';
-import { portfolioData, gameDescription } from '../data/portfolioData';
+import { gameDescription } from '../data/portfolioData';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 
 const Index = () => {
   const [showPortfolio, setShowPortfolio] = useState(false);
   const [activeSection, setActiveSection] = useState('info');
+  const { portfolioData, updateSection } = usePortfolioData();
 
   const handleEnter = () => {
     setShowPortfolio(true);
@@ -33,6 +35,7 @@ const Index = () => {
           section="illustration" 
           works={portfolioData.illustration}
           maxWorks={6}
+          onWorksUpdate={(works) => updateSection('illustration', works)}
         />
       )}
       
@@ -41,6 +44,7 @@ const Index = () => {
           section="character" 
           works={portfolioData.character}
           maxWorks={6}
+          onWorksUpdate={(works) => updateSection('character', works)}
         />
       )}
       
@@ -51,6 +55,7 @@ const Index = () => {
           maxWorks={4}
           hasDescription={true}
           gameDescription={gameDescription}
+          onWorksUpdate={(works) => updateSection('game', works)}
         />
       )}
       
@@ -59,6 +64,7 @@ const Index = () => {
           section="animation" 
           works={portfolioData.animation}
           maxWorks={2}
+          onWorksUpdate={(works) => updateSection('animation', works)}
         />
       )}
       
@@ -67,6 +73,7 @@ const Index = () => {
           section="awards" 
           works={portfolioData.awards}
           maxWorks={4}
+          onWorksUpdate={(works) => updateSection('awards', works)}
         />
       )}
     </div>
