@@ -1,12 +1,74 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import CoverPage from '../components/CoverPage';
+import Sidebar from '../components/Sidebar';
+import InfoSection from '../components/InfoSection';
+import WorkSection from '../components/WorkSection';
+import { portfolioData, gameDescription } from '../data/portfolioData';
 
 const Index = () => {
+  const [showPortfolio, setShowPortfolio] = useState(false);
+  const [activeSection, setActiveSection] = useState('info');
+
+  const handleEnter = () => {
+    setShowPortfolio(true);
+  };
+
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+  };
+
+  if (!showPortfolio) {
+    return <CoverPage onEnter={handleEnter} />;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
+      
+      {activeSection === 'info' && <InfoSection />}
+      
+      {activeSection === 'illustration' && (
+        <WorkSection 
+          section="illustration" 
+          works={portfolioData.illustration}
+          maxWorks={6}
+        />
+      )}
+      
+      {activeSection === 'character' && (
+        <WorkSection 
+          section="character" 
+          works={portfolioData.character}
+          maxWorks={6}
+        />
+      )}
+      
+      {activeSection === 'game' && (
+        <WorkSection 
+          section="game" 
+          works={portfolioData.game}
+          maxWorks={4}
+          hasDescription={true}
+          gameDescription={gameDescription}
+        />
+      )}
+      
+      {activeSection === 'animation' && (
+        <WorkSection 
+          section="animation" 
+          works={portfolioData.animation}
+          maxWorks={2}
+        />
+      )}
+      
+      {activeSection === 'awards' && (
+        <WorkSection 
+          section="awards" 
+          works={portfolioData.awards}
+          maxWorks={4}
+        />
+      )}
     </div>
   );
 };
