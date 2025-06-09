@@ -8,29 +8,21 @@ interface CoverPageProps {
 const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
   return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-background via-background to-purple-900/20 flex items-center justify-center cursor-pointer relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-background via-background to-blue-900/20 flex items-center justify-center cursor-pointer relative overflow-hidden"
       onClick={onEnter}
     >
       {/* Animated background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-96 h-96 bg-neon-blue/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-neon-purple/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/10 rounded-full blur-2xl"></div>
-      </div>
-      
-      {/* Geometric shapes */}
-      <div className="absolute top-10 right-10 flex space-x-4">
-        <div className="w-6 h-6 bg-neon-blue rounded-sm"></div>
-        <div className="w-6 h-6 bg-neon-blue rounded-sm"></div>
-        <div className="w-6 h-6 bg-neon-blue rounded-sm"></div>
-        <div className="w-16 h-2 bg-neon-blue rounded-full"></div>
       </div>
       
       {/* Main content */}
       <div className="text-center z-10 fade-in">
         <h1 className="text-6xl md:text-8xl font-light mb-4">
           <span className="text-neon-blue">Yu-Fang</span>
-          <span className="text-neon-purple italic ml-4">////</span>
+          <span className="text-blue-400 italic ml-4">////</span>
           <br />
           <span className="text-white italic text-4xl md:text-5xl">profile</span>
         </h1>
