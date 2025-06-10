@@ -102,7 +102,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
         <img
           src={work.image}
           alt={work.title}
-          className={`${sizeClass} object-cover transition-transform duration-300 group-hover:scale-105`}
+          className={`${sizeClass} ${isModal ? 'object-contain' : 'object-cover'} transition-transform duration-300 ${!isModal ? 'group-hover:scale-105' : ''}`}
           onError={() => handleImageError(work.id)}
           onLoad={() => handleImageLoad(work.id)}
         />
@@ -234,12 +234,12 @@ const WorkSection: React.FC<WorkSectionProps> = ({
           onClick={() => setSelectedWork(null)}
         >
           <div 
-            className="max-w-4xl w-full bg-card rounded-lg overflow-hidden fade-in"
+            className="max-w-5xl w-full bg-card rounded-lg overflow-hidden fade-in"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-              {/* Image */}
-              <div className="aspect-square relative overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-3">
+              {/* Image - Now takes up more space and shows full image */}
+              <div className="lg:col-span-2 max-h-[70vh] flex items-center justify-center bg-black/20">
                 {renderWorkImage(selectedWork, true)}
               </div>
               
