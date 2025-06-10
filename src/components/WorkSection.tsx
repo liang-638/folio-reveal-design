@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Plus, Edit, Trash2, Upload } from 'lucide-react';
+import { ChevronUp, ChevronDown, Plus, Edit, Trash2, Upload, ImageIcon } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface Work {
@@ -31,6 +31,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
   const [selectedWork, setSelectedWork] = useState<Work | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editingWork, setEditingWork] = useState<Work | null>(null);
+  const [imageLoadErrors, setImageLoadErrors] = useState<Set<number>>(new Set());
 
   const toggleView = () => {
     setCurrentView(prev => prev === 'description' ? 'works' : 'description');
@@ -38,12 +39,24 @@ const WorkSection: React.FC<WorkSectionProps> = ({
 
   const displayWorks = works.slice(0, maxWorks);
 
+  const handleImageError = (workId: number) => {
+    setImageLoadErrors(prev => new Set(prev).add(workId));
+  };
+
+  const handleImageLoad = (workId: number) => {
+    setImageLoadErrors(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(workId);
+      return newSet;
+    });
+  };
+
   const handleAddWork = () => {
     const newWork: Work = {
       id: Date.now(),
       title: 'New Work',
       description: 'Enter description here...',
-      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475'
+      image: ''
     };
     setEditingWork(newWork);
     setIsEditing(true);
@@ -77,6 +90,37 @@ const WorkSection: React.FC<WorkSectionProps> = ({
       const updatedWorks = works.filter(w => w.id !== workId);
       onWorksUpdate(updatedWorks);
     }
+  };
+
+  const renderWorkImage = (work: Work, isModal = false) => {
+    const hasError = imageLoadErrors.has(work.id);
+    const hasImage = work.image && work.image.trim() !== '';
+    const sizeClass = isModal ? 'w-full h-full' : 'w-full h-full';
+    
+    if (hasImage && !hasError) {
+      return (
+        <img
+          src={work.image}
+          alt={work.title}
+          className={`${sizeClass} object-cover transition-transform duration-300 group-hover:scale-105`}
+          onError={() => handleImageError(work.id)}
+          onLoad={() => handleImageLoad(work.id)}
+        />
+      );
+    }
+    
+    // Fallback to icon
+    return (
+      <div className={`${sizeClass} bg-gradient-to-br from-neon-blue/20 to-accent/20 flex items-center justify-center`}>
+        <div className="text-4xl md:text-6xl opacity-50 group-hover:opacity-70 transition-opacity">
+          {section === 'illustration' ? '🎨' :
+           section === 'character' ? '👤' :
+           section === 'game' ? '🎮' :
+           section === 'animation' ? '🎬' :
+           section === 'awards' ? '🏆' : '📁'}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -141,18 +185,15 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                   className="relative aspect-video bg-card/30 rounded-lg border border-border/50 cursor-pointer hover:border-neon-blue/50 transition-all duration-300 hover:scale-105 overflow-hidden group"
                 >
                   <div 
-                    className="w-full h-full bg-gradient-to-br from-neon-blue/20 to-accent/20 flex items-center justify-center relative"
+                    className="w-full h-full relative"
                     onClick={() => setSelectedWork(work)}
                   >
-                    <div className="text-4xl md:text-6xl opacity-50 group-hover:opacity-70 transition-opacity">
-                      {section === 'illustration' ? '🎨' :
-                       section === 'character' ? '👤' :
-                       section === 'game' ? '🎮' :
-                       section === 'animation' ? '🎬' :
-                       section === 'awards' ? '🏆' : '📁'}
-                    </div>
+                    {renderWorkImage(work)}
+                    
+                    {/* Overlay with title */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute bottom-4 left-4 right-4">
-                      <p className="text-xs md:text-sm text-muted-foreground truncate">{work.title}</p>
+                      <p className="text-xs md:text-sm text-white font-medium truncate">{work.title}</p>
                     </div>
                   </div>
                   
@@ -164,7 +205,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                           e.stopPropagation();
                           handleEditWork(work);
                         }}
-                        className="p-1 bg-neon-blue/20 rounded hover:bg-neon-blue/30"
+                        className="p-1 bg-neon-blue/20 rounded hover:bg-neon-blue/30 backdrop-blur-sm"
                       >
                         <Edit size={14} className="text-neon-blue" />
                       </button>
@@ -173,7 +214,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                           e.stopPropagation();
                           handleDeleteWork(work.id);
                         }}
-                        className="p-1 bg-red-500/20 rounded hover:bg-red-500/30"
+                        className="p-1 bg-red-500/20 rounded hover:bg-red-500/30 backdrop-blur-sm"
                       >
                         <Trash2 size={14} className="text-red-400" />
                       </button>
@@ -198,14 +239,8 @@ const WorkSection: React.FC<WorkSectionProps> = ({
           >
             <div className="grid grid-cols-1 lg:grid-cols-2">
               {/* Image */}
-              <div className="aspect-square bg-gradient-to-br from-neon-blue/20 to-accent/20 flex items-center justify-center">
-                <div className="text-6xl md:text-8xl opacity-70">
-                  {section === 'illustration' ? '🎨' :
-                   section === 'character' ? '👤' :
-                   section === 'game' ? '🎮' :
-                   section === 'animation' ? '🎬' :
-                   section === 'awards' ? '🏆' : '📁'}
-                </div>
+              <div className="aspect-square relative overflow-hidden">
+                {renderWorkImage(selectedWork, true)}
               </div>
               
               {/* Details */}
@@ -256,15 +291,33 @@ const WorkSection: React.FC<WorkSectionProps> = ({
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Image URL</label>
+                <label className="block text-sm font-medium mb-2">Cloudinary Image URL</label>
                 <input
                   type="url"
                   value={editingWork.image}
                   onChange={(e) => setEditingWork({...editingWork, image: e.target.value})}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://res.cloudinary.com/your-cloud/image/upload/..."
                   className="w-full p-2 bg-background border border-border rounded-lg focus:border-neon-blue outline-none"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  貼上您的 Cloudinary 圖片 URL
+                </p>
               </div>
+
+              {/* Image Preview */}
+              {editingWork.image && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium mb-2">Preview</label>
+                  <div className="w-full h-32 bg-card border border-border rounded-lg overflow-hidden">
+                    <img
+                      src={editingWork.image}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                      onError={() => {}}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="flex gap-2 mt-6">
