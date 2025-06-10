@@ -25,11 +25,6 @@ export const portfolioData = {
     { id: 4, title: "Indie Project", description: "Independent game project showcasing creative storytelling and art direction.", image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7" },
   ],
   
-  animation: [
-    { id: 1, title: "Character Animation", description: "2D character animation sequences featuring expressive movements and storytelling.", image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" },
-    { id: 2, title: "Motion Graphics", description: "Motion graphics and visual effects for promotional and educational content.", image: "https://images.unsplash.com/photo-1518770660439-4636190af475" },
-  ],
-  
   awards: [
     { id: 1, title: "Design Excellence Award", description: "Recognition for outstanding achievement in digital design and illustration.", image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6" },
     { id: 2, title: "Adobe Certified Expert", description: "Professional certification in Adobe Creative Suite applications.", image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" },

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { User, Image, User as CharacterIcon, Layers, ChevronRight, Info, Menu, X } from 'lucide-react';
+import { User, Image, User as CharacterIcon, Layers, Info, Menu, X, Award } from 'lucide-react';
 
 interface SidebarProps {
   activeSection: string;
@@ -15,8 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange }) => 
     { id: 'illustration', label: 'Illustration', icon: Image },
     { id: 'character', label: 'Character', icon: CharacterIcon },
     { id: 'game', label: 'Game Design', icon: Layers },
-    { id: 'animation', label: 'Animation', icon: ChevronRight },
-    { id: 'awards', label: 'Awards', icon: User },
+    { id: 'awards', label: 'Awards', icon: Award },
   ];
 
   const handleSectionChange = (section: string) => {

@@ -59,15 +59,6 @@ const Index = () => {
         />
       )}
       
-      {activeSection === 'animation' && (
-        <WorkSection 
-          section="animation" 
-          works={portfolioData.animation}
-          maxWorks={2}
-          onWorksUpdate={(works) => updateSection('animation', works)}
-        />
-      )}
-      
       {activeSection === 'awards' && (
         <WorkSection 
           section="awards" 
