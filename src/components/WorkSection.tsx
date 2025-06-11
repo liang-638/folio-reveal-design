@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown, Plus, Edit, Trash2, Upload, ImageIcon } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface Work {
-  id: number;
+  id: string;
   title: string;
   description: string;
   image: string;
@@ -16,7 +15,7 @@ interface WorkSectionProps {
   maxWorks?: number;
   hasDescription?: boolean;
   gameDescription?: string;
-  onWorksUpdate?: (works: Work[]) => void;
+  onWorksUpdate?: (works: Omit<Work, 'sort_order'>[]) => void;
 }
 
 const WorkSection: React.FC<WorkSectionProps> = ({ 
@@ -31,7 +30,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
   const [selectedWork, setSelectedWork] = useState<Work | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editingWork, setEditingWork] = useState<Work | null>(null);
-  const [imageLoadErrors, setImageLoadErrors] = useState<Set<number>>(new Set());
+  const [imageLoadErrors, setImageLoadErrors] = useState<Set<string>>(new Set());
 
   const toggleView = () => {
     setCurrentView(prev => prev === 'description' ? 'works' : 'description');
@@ -39,11 +38,11 @@ const WorkSection: React.FC<WorkSectionProps> = ({
 
   const displayWorks = works.slice(0, maxWorks);
 
-  const handleImageError = (workId: number) => {
+  const handleImageError = (workId: string) => {
     setImageLoadErrors(prev => new Set(prev).add(workId));
   };
 
-  const handleImageLoad = (workId: number) => {
+  const handleImageLoad = (workId: string) => {
     setImageLoadErrors(prev => {
       const newSet = new Set(prev);
       newSet.delete(workId);
@@ -53,7 +52,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
 
   const handleAddWork = () => {
     const newWork: Work = {
-      id: Date.now(),
+      id: Date.now().toString(),
       title: 'New Work',
       description: 'Enter description here...',
       image: ''
@@ -85,7 +84,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
     setEditingWork(null);
   };
 
-  const handleDeleteWork = (workId: number) => {
+  const handleDeleteWork = (workId: string) => {
     if (onWorksUpdate) {
       const updatedWorks = works.filter(w => w.id !== workId);
       onWorksUpdate(updatedWorks);

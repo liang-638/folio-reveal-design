@@ -4,13 +4,14 @@ import CoverPage from '../components/CoverPage';
 import Sidebar from '../components/Sidebar';
 import InfoSection from '../components/InfoSection';
 import WorkSection from '../components/WorkSection';
-import { gameDescription } from '../data/portfolioData';
-import { usePortfolioData } from '../hooks/usePortfolioData';
+import { useSupabasePortfolioData } from '../hooks/useSupabasePortfolioData';
+import { useGameDescription } from '../hooks/useGameDescription';
 
 const Index = () => {
   const [showPortfolio, setShowPortfolio] = useState(false);
   const [activeSection, setActiveSection] = useState('info');
-  const { portfolioData, updateSection } = usePortfolioData();
+  const { portfolioData, updateSection, isLoading: portfolioLoading } = useSupabasePortfolioData();
+  const { gameDescription, isLoading: gameDescLoading } = useGameDescription();
 
   const handleEnter = () => {
     setShowPortfolio(true);
@@ -22,6 +23,14 @@ const Index = () => {
 
   if (!showPortfolio) {
     return <CoverPage onEnter={handleEnter} />;
+  }
+
+  if (portfolioLoading || gameDescLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-neon-blue text-lg">Loading portfolio...</div>
+      </div>
+    );
   }
 
   return (

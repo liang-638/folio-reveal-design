@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown, Edit, Save, X } from 'lucide-react';
-import { useProfileData } from '../hooks/useProfileData';
+import { useSupabaseProfileData } from '../hooks/useSupabaseProfileData';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
@@ -9,7 +9,7 @@ import { Label } from './ui/label';
 const InfoSection: React.FC = () => {
   const [currentView, setCurrentView] = useState<'profile' | 'skills'>('profile');
   const [isEditing, setIsEditing] = useState(false);
-  const { profileData, updateProfile } = useProfileData();
+  const { profileData, updateProfile, isLoading } = useSupabaseProfileData();
   const [editData, setEditData] = useState(profileData);
 
   const toggleView = () => {
@@ -31,6 +31,14 @@ const InfoSection: React.FC = () => {
     setEditData(profileData);
     setIsEditing(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className="ml-64 min-h-screen bg-background flex items-center justify-center">
+        <div className="text-neon-blue text-lg">Loading profile...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="ml-64 min-h-screen bg-background relative">
@@ -161,7 +169,7 @@ const InfoSection: React.FC = () => {
         </div>
       )}
 
-      {/* Skills View */}
+      {/* Skills View - 保持原有的靜態內容和聯絡資訊編輯功能 */}
       {currentView === 'skills' && (
         <div className="slide-down p-6 md:p-12 min-h-screen">
           <div className="max-w-4xl mx-auto">
