@@ -33,4 +33,4 @@ export const portfolioData = {
   ],
 };
 
-export const gameDescription = "My game design projects focus on creating immersive experiences that combine compelling storytelling with innovative gameplay mechanics. Each project represents a unique exploration of interactive entertainment, from RPG adventures to puzzle platforms, emphasizing player engagement and visual excellence.";
+export const gameDescription = "My game design projects focus on creating immersive experiences that combine compelling storytelling with innovative gameplay mechanics. Each project represents a unique exploration of interactive entertainment, from RPG adventures to puzzle platorms, emphasizing player engagement and visual excellence.";
