@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface CoverPageProps {
@@ -23,16 +22,16 @@ const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
         <div className="w-8 h-6 bg-blue-500 rounded-sm"></div>
       </div>
 
-      {/* 波浪狀幾何圖形（SVG），左下角，不影響主文字，z-index 0 */}
-      <div className="absolute left-0 bottom-0 z-0 w-[360px] max-w-[60vw] pointer-events-none">
+      {/* 波浪狀幾何圖形（SVG），左下角，放大覆蓋 3/4 畫面範圍 */}
+      <div className="absolute left-0 bottom-0 z-0 w-[1200px] max-w-[90vw] h-[420px] max-h-[80vh] pointer-events-none">
         <svg
-          viewBox="0 0 400 140"
+          viewBox="0 0 1200 420"
           width="100%"
           height="100%"
           fill="none"
         >
           <defs>
-            <linearGradient id="wave-gradient" x1="0" y1="0" x2="400" y2="140" gradientUnits="userSpaceOnUse">
+            <linearGradient id="wave-gradient" x1="0" y1="0" x2="1200" y2="420" gradientUnits="userSpaceOnUse">
               <stop stopColor="#3b82f6" stopOpacity="0.85"/>
               <stop offset="0.5" stopColor="#8b5cf6" stopOpacity="0.68"/>
               <stop offset="1" stopColor="#a78bfa" stopOpacity="0.45"/>
@@ -40,12 +39,12 @@ const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
           </defs>
           <path
             d="
-              M0,120
-              Q60,110 110,130
-              T230,120
-              T340,135
-              Q380,140 400,100
-              L400,140 L0,140 Z
+              M0,360
+              Q180,330 330,390
+              T690,360
+              T1020,405
+              Q1140,420 1200,300
+              L1200,420 L0,420 Z
             "
             fill="url(#wave-gradient)"
             opacity="0.92"
@@ -53,12 +52,12 @@ const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
           {/* 疊加一層次波浪，增加幾何層次 */}
           <path
             d="
-              M0,130
-              Q80,120 135,137
-              T220,127
-              T320,135
-              Q390,140 400,125
-              L400,140 L0,140 Z
+              M0,390
+              Q240,360 405,411
+              T660,381
+              T960,405
+              Q1170,420 1200,375
+              L1200,420 L0,420 Z
             "
             fill="url(#wave-gradient)"
             opacity="0.42"
