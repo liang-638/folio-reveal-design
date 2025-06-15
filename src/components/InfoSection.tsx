@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown, Edit, Save, X } from 'lucide-react';
 import { useSupabaseProfileData } from '../hooks/useSupabaseProfileData';
@@ -169,12 +168,11 @@ const InfoSection: React.FC = () => {
         </div>
       )}
 
-      {/* Skills View - 保持原有的靜態內容和聯絡資訊編輯功能 */}
+      {/* Skills View - 設計軟體多一組更新/聯絡資訊修正 */}
       {currentView === 'skills' && (
         <div className="slide-down p-6 md:p-12 min-h-screen">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12">Skills & Tools</h2>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
               {/* Design Software */}
               <div className="space-y-6">
@@ -185,8 +183,7 @@ const InfoSection: React.FC = () => {
                     { name: 'PS', color: 'border-blue-500 text-blue-500' },
                     { name: 'AE', color: 'border-blue-400 text-blue-400' },
                     { name: 'PR', color: 'border-blue-300 text-blue-300' },
-                    { name: 'FL', color: 'border-gray-400 text-gray-400' },
-                    { name: 'C4D', color: 'border-orange-500 text-orange-500' },
+                    { name: 'CSP', color: 'border-gray-400 text-gray-400' },
                   ].map((tool) => (
                     <div
                       key={tool.name}
@@ -197,57 +194,23 @@ const InfoSection: React.FC = () => {
                   ))}
                 </div>
               </div>
-
               {/* Contact Information */}
               <div className="space-y-6">
                 <h3 className="text-lg md:text-xl font-semibold text-neon-blue">Contact</h3>
-                
-                {!isEditing ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-neon-blue rounded-full"></div>
-                      <span className="text-muted-foreground text-sm md:text-base">Email: {profileData.email}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span className="text-muted-foreground text-sm md:text-base">Portfolio: {profileData.website}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-neon-blue rounded-full"></div>
-                      <span className="text-muted-foreground text-sm md:text-base">Location: {profileData.location}</span>
-                    </div>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-neon-blue rounded-full"></div>
+                    <span className="text-muted-foreground text-sm md:text-base">Email: leirxy@gmail.com</span>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="email" className="text-sm text-muted-foreground">Email</Label>
-                      <Input
-                        id="email"
-                        value={editData.email}
-                        onChange={(e) => setEditData({...editData, email: e.target.value})}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="website" className="text-sm text-muted-foreground">Website</Label>
-                      <Input
-                        id="website"
-                        value={editData.website}
-                        onChange={(e) => setEditData({...editData, website: e.target.value})}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="location" className="text-sm text-muted-foreground">Location</Label>
-                      <Input
-                        id="location"
-                        value={editData.location}
-                        onChange={(e) => setEditData({...editData, location: e.target.value})}
-                        className="mt-1"
-                      />
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span className="text-muted-foreground text-sm md:text-base">Portfolio: www.portfolio.com</span>
                   </div>
-                )}
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-neon-blue rounded-full"></div>
+                    <span className="text-muted-foreground text-sm md:text-base">Location: Taipei, Taiwan</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
