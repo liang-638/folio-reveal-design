@@ -23,7 +23,50 @@ const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
         <div className="w-8 h-6 bg-blue-500 rounded-sm"></div>
       </div>
 
-      {/* Left bottom wave-like geometric shapes */}
+      {/* 波浪狀幾何圖形（SVG），左下角，不影響主文字，z-index 0 */}
+      <div className="absolute left-0 bottom-0 z-0 w-[360px] max-w-[60vw] pointer-events-none">
+        <svg
+          viewBox="0 0 400 140"
+          width="100%"
+          height="100%"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="wave-gradient" x1="0" y1="0" x2="400" y2="140" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#3b82f6" stopOpacity="0.85"/>
+              <stop offset="0.5" stopColor="#8b5cf6" stopOpacity="0.68"/>
+              <stop offset="1" stopColor="#a78bfa" stopOpacity="0.45"/>
+            </linearGradient>
+          </defs>
+          <path
+            d="
+              M0,120
+              Q60,110 110,130
+              T230,120
+              T340,135
+              Q380,140 400,100
+              L400,140 L0,140 Z
+            "
+            fill="url(#wave-gradient)"
+            opacity="0.92"
+          />
+          {/* 疊加一層次波浪，增加幾何層次 */}
+          <path
+            d="
+              M0,130
+              Q80,120 135,137
+              T220,127
+              T320,135
+              Q390,140 400,125
+              L400,140 L0,140 Z
+            "
+            fill="url(#wave-gradient)"
+            opacity="0.42"
+          />
+        </svg>
+      </div>
+
+      {/* Left bottom wave-like geometric shapes - 原有內容保留 */}
       <div className="absolute left-0 bottom-0 overflow-hidden">
         {/* First wave layer - closest to bottom */}
         <div className="relative">
