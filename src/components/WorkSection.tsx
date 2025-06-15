@@ -99,9 +99,21 @@ const WorkSection: React.FC<WorkSectionProps> = ({
       {hasDescription && currentView === 'description' && (
         <div className="slide-up p-4 md:p-12 flex items-center justify-center min-h-screen">
           <div className="max-w-3xl w-full">
-            <h2 className="text-2xl md:text-4xl font-semibold text-center mb-6 md:mb-8 text-neon-blue">
-              {section === 'game' ? 'Game Design' : section}
-            </h2>
+            {/* 用圖片替換 Game Design 標題 */}
+            <div className="flex justify-center items-center mb-6 md:mb-8">
+              {section === 'game' ? (
+                <img
+                  src="/lovable-uploads/c72f66de-4674-4abd-a8d7-05bdd0e80c54.png"
+                  alt="Game Design Logo"
+                  className="max-h-32 w-auto object-contain"
+                  style={{ filter: 'drop-shadow(0 2px 16px #2224)' }}
+                />
+              ) : (
+                <h2 className="text-2xl md:text-4xl font-semibold text-center text-neon-blue">
+                  {section}
+                </h2>
+              )}
+            </div>
             <div className="bg-card/50 backdrop-blur-sm rounded-lg p-4 md:p-8 border border-border">
               <p className="text-muted-foreground leading-relaxed text-base md:text-lg">
                 {gameDescription || 'Game design description will be placed here. This section introduces the core concepts and design philosophy behind the game projects.'}
@@ -116,19 +128,28 @@ const WorkSection: React.FC<WorkSectionProps> = ({
         <div className="slide-down p-4 md:p-12 min-h-screen">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8 md:mb-12">
-              <h2 className="text-xl md:text-3xl font-semibold text-neon-blue capitalize">
-                {section === 'illustration'
-                  ? 'Illustration Design'
-                  : section === 'character'
-                  ? 'Character Design'
-                  : section === 'game'
-                  ? 'Game Projects'
-                  : section === 'animation'
-                  ? 'Animation Works'
-                  : section === 'awards'
-                  ? 'Certificates & Awards'
-                  : section}
-              </h2>
+              {section === 'game' ? (
+                <img
+                  src="/lovable-uploads/c72f66de-4674-4abd-a8d7-05bdd0e80c54.png"
+                  alt="Game Design Logo"
+                  className="max-h-20 w-auto object-contain"
+                  style={{ filter: 'drop-shadow(0 2px 8px #2224)' }}
+                />
+              ) : (
+                <h2 className="text-xl md:text-3xl font-semibold text-neon-blue capitalize">
+                  {section === 'illustration'
+                    ? 'Illustration Design'
+                    : section === 'character'
+                    ? 'Character Design'
+                    : section === 'game'
+                    ? 'Game Projects'
+                    : section === 'animation'
+                    ? 'Animation Works'
+                    : section === 'awards'
+                    ? 'Certificates & Awards'
+                    : section}
+                </h2>
+              )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
               {displayWorks.map((work) => (
