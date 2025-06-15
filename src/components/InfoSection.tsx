@@ -1,278 +1,266 @@
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Edit, Save, X } from 'lucide-react';
 import { useSupabaseProfileData } from '../hooks/useSupabaseProfileData';
+import { Button } from './ui/button';
+import { Edit, Save, X } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import ProtectedComponent from './ProtectedComponent';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
-import { Button } from './ui/button';
 
 const InfoSection: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'profile' | 'skills'>('profile');
-  const [isEditing, setIsEditing] = useState(false);
-  const { profileData, updateProfile, isLoading } = useSupabaseProfileData();
+  const { profileData, updateProfileData, isLoading } = useSupabaseProfileData();
   const { isAuthenticated } = useAuth();
-  const [editData, setEditData] = useState(profileData);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    name: '',
+    title: '',
+    email: '',
+    website: '',
+    location: '',
+    about_me: ['']
+  });
 
-  const toggleView = () => {
-    setCurrentView(prev => prev === 'profile' ? 'skills' : 'profile');
-    setIsEditing(false);
+  React.useEffect(() => {
+    if (profileData) {
+      setEditData({
+        name: profileData.name || '',
+        title: profileData.title || '',
+        email: profileData.email || '',
+        website: profileData.website || '',
+        location: profileData.location || '',
+        about_me: profileData.about_me || ['']
+      });
+    }
+  }, [profileData]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
   };
 
-  const handleSave = () => {
-    updateProfile(editData);
+  const handleSave = async () => {
+    await updateProfileData(editData);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditData(profileData);
+    if (profileData) {
+      setEditData({
+        name: profileData.name || '',
+        title: profileData.title || '',
+        email: profileData.email || '',
+        website: profileData.website || '',
+        location: profileData.location || '',
+        about_me: profileData.about_me || ['']
+      });
+    }
     setIsEditing(false);
   };
 
-  const handleEditStart = () => {
-    setEditData(profileData);
-    setIsEditing(true);
+  const updateAboutParagraph = (index: number, value: string) => {
+    const newAbout = [...editData.about_me];
+    newAbout[index] = value;
+    setEditData({ ...editData, about_me: newAbout });
+  };
+
+  const addAboutParagraph = () => {
+    setEditData({ ...editData, about_me: [...editData.about_me, ''] });
+  };
+
+  const removeAboutParagraph = (index: number) => {
+    if (editData.about_me.length > 1) {
+      const newAbout = editData.about_me.filter((_, i) => i !== index);
+      setEditData({ ...editData, about_me: newAbout });
+    }
   };
 
   if (isLoading) {
     return (
-      <div className="ml-64 min-h-screen bg-background flex items-center justify-center">
+      <div className="md:ml-64 min-h-screen bg-background flex items-center justify-center">
         <div className="text-neon-blue text-lg">Loading profile...</div>
       </div>
     );
   }
 
   return (
-    <div className="ml-64 min-h-screen bg-background relative">
-      {/* Navigation arrows */}
-      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-30">
-        <button
-          onClick={toggleView}
-          className="p-3 bg-card/80 backdrop-blur-sm rounded-full border border-neon-blue/30 hover:bg-neon-blue/20 transition-all duration-200"
-        >
-          {currentView === 'profile' ? (
-            <ChevronDown className="text-neon-blue" size={24} />
-          ) : (
-            <ChevronUp className="text-neon-blue" size={24} />
-          )}
-        </button>
-      </div>
-
-      {/* Edit button - only show for authenticated users */}
-      {currentView === 'profile' && (
+    <div className="md:ml-64 min-h-screen bg-background">
+      <div className="p-4 md:p-12 max-w-4xl mx-auto">
+        {/* Edit Button - Only show for authenticated users */}
         <ProtectedComponent>
-          <div className="fixed right-8 top-20 z-30">
+          <div className="flex justify-end mb-6">
             {!isEditing ? (
-              <button
-                onClick={handleEditStart}
-                className="p-3 bg-card/80 backdrop-blur-sm rounded-full border border-neon-blue/30 hover:bg-neon-blue/20 transition-all duration-200"
+              <Button
+                onClick={handleEdit}
+                className="flex items-center gap-2 bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
+                variant="outline"
               >
-                <Edit className="text-neon-blue" size={20} />
-              </button>
+                <Edit size={16} />
+                Edit Profile
+              </Button>
             ) : (
-              <div className="flex space-x-2">
-                <button
+              <div className="flex gap-2">
+                <Button
                   onClick={handleSave}
-                  className="p-3 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 hover:bg-green-500/30 transition-all duration-200"
+                  className="flex items-center gap-2 bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/30"
+                  variant="outline"
                 >
-                  <Save className="text-green-500" size={20} />
-                </button>
-                <button
+                  <Save size={16} />
+                  Save
+                </Button>
+                <Button
                   onClick={handleCancel}
-                  className="p-3 bg-red-500/20 backdrop-blur-sm rounded-full border border-red-500/30 hover:bg-red-500/30 transition-all duration-200"
+                  className="flex items-center gap-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30"
+                  variant="outline"
                 >
-                  <X className="text-red-500" size={20} />
-                </button>
+                  <X size={16} />
+                  Cancel
+                </Button>
               </div>
             )}
           </div>
         </ProtectedComponent>
-      )}
 
-      {/* Profile View */}
-      {currentView === 'profile' && (
-        <div className="slide-up p-6 md:p-12 flex items-center justify-center min-h-screen">
-          <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Avatar and Name */}
-            <div className="text-center lg:text-left">
-              <div className="w-32 h-32 md:w-48 md:h-48 mx-auto lg:mx-0 mb-6 relative">
-                <div className="gradient-border rounded-full">
-                  <div className="gradient-border-inner rounded-full p-2">
-                    <div className="w-full h-full bg-gradient-to-br from-neon-blue to-blue-500 rounded-full flex items-center justify-center">
-                      <div className="text-4xl md:text-6xl">😊</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {!isEditing ? (
-                <>
-                  <h1 className="text-3xl md:text-4xl font-light mb-2">
-                    <span className="text-neon-blue">{profileData.name}</span>
-                  </h1>
-                  <p className="text-blue-400 text-lg md:text-xl">{profileData.title}</p>
-                </>
-              ) : (
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name" className="text-sm text-muted-foreground">Name</Label>
-                    <Input
-                      id="name"
-                      value={editData.name}
-                      onChange={(e) => setEditData({...editData, name: e.target.value})}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="title" className="text-sm text-muted-foreground">Title</Label>
-                    <Input
-                      id="title"
-                      value={editData.title}
-                      onChange={(e) => setEditData({...editData, title: e.target.value})}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Biography */}
-            <div className="space-y-6">
-              <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-4">About Me</h2>
-              
-              {!isEditing ? (
-                <div className="space-y-4 text-muted-foreground leading-relaxed text-sm md:text-base">
-                  {profileData.aboutMe.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {editData.aboutMe.map((paragraph, index) => (
-                    <div key={index}>
-                      <Label htmlFor={`paragraph-${index}`} className="text-sm text-muted-foreground">
-                        Paragraph {index + 1}
-                      </Label>
-                      <Textarea
-                        id={`paragraph-${index}`}
-                        value={paragraph}
-                        onChange={(e) => {
-                          const newAboutMe = [...editData.aboutMe];
-                          newAboutMe[index] = e.target.value;
-                          setEditData({...editData, aboutMe: newAboutMe});
-                        }}
-                        className="mt-1"
-                        rows={3}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+        {/* Profile Content */}
+        <div className="space-y-8 md:space-y-12">
+          {/* Header Section */}
+          <div className="text-center space-y-4">
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  value={editData.name}
+                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                  className="text-2xl md:text-4xl font-bold text-center bg-transparent border-b border-neon-blue/50 focus:border-neon-blue outline-none text-neon-blue w-full max-w-md mx-auto block"
+                  placeholder="Your Name"
+                />
+                <input
+                  type="text"
+                  value={editData.title}
+                  onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+                  className="text-lg md:text-xl text-center bg-transparent border-b border-muted-foreground/50 focus:border-neon-blue outline-none text-muted-foreground w-full max-w-lg mx-auto block mt-2"
+                  placeholder="Your Title"
+                />
+              </>
+            ) : (
+              <>
+                <h1 className="text-2xl md:text-4xl font-bold text-neon-blue">
+                  {profileData?.name || 'Designer Name'}
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground">
+                  {profileData?.title || 'Digital Artist & Game Designer'}
+                </p>
+              </>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* Skills View */}
-      {currentView === 'skills' && (
-        <div className="slide-down p-6 md:p-12 min-h-screen">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12">Skills & Tools</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
-              {/* Design Software */}
-              <div className="space-y-6">
-                <h3 className="text-lg md:text-xl font-semibold text-neon-blue">Design Software</h3>
-                <div className="grid grid-cols-3 gap-3 md:gap-4">
-                  {[
-                    { name: 'AI', color: 'border-yellow-500 text-yellow-500' },
-                    { name: 'PS', color: 'border-blue-500 text-blue-500' },
-                    { name: 'AE', color: 'border-blue-400 text-blue-400' },
-                    { name: 'PR', color: 'border-blue-300 text-blue-300' },
-                    { name: 'FL', color: 'border-gray-400 text-gray-400' },
-                    { name: 'C4D', color: 'border-orange-500 text-orange-500' },
-                  ].map((tool) => (
-                    <div
-                      key={tool.name}
-                      className={`aspect-square border-2 ${tool.color} rounded-lg flex items-center justify-center text-sm md:text-lg font-bold`}
-                    >
-                      {tool.name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div className="space-y-6">
-                <h3 className="text-lg md:text-xl font-semibold text-neon-blue">Contact</h3>
-                
-                {!isEditing ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-neon-blue rounded-full"></div>
-                      <span className="text-muted-foreground text-sm md:text-base">Email: {profileData.email}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span className="text-muted-foreground text-sm md:text-base">Portfolio: {profileData.website}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-neon-blue rounded-full"></div>
-                      <span className="text-muted-foreground text-sm md:text-base">Location: {profileData.location}</span>
-                    </div>
-                  </div>
+          {/* Contact Information */}
+          <div className="bg-card/30 rounded-lg p-4 md:p-8 border border-border/50">
+            <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-neon-blue">Contact Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Email</label>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    value={editData.email}
+                    onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                    className="w-full p-2 bg-background border border-border rounded-lg focus:border-neon-blue outline-none"
+                  />
                 ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="email" className="text-sm text-muted-foreground">Email</Label>
-                      <Input
-                        id="email"
-                        value={editData.email}
-                        onChange={(e) => setEditData({...editData, email: e.target.value})}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="website" className="text-sm text-muted-foreground">Website</Label>
-                      <Input
-                        id="website"
-                        value={editData.website}
-                        onChange={(e) => setEditData({...editData, website: e.target.value})}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="location" className="text-sm text-muted-foreground">Location</Label>
-                      <Input
-                        id="location"
-                        value={editData.location}
-                        onChange={(e) => setEditData({...editData, location: e.target.value})}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
+                  <p className="text-base md:text-lg">{profileData?.email || 'contact@example.com'}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Website</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.website}
+                    onChange={(e) => setEditData({ ...editData, website: e.target.value })}
+                    className="w-full p-2 bg-background border border-border rounded-lg focus:border-neon-blue outline-none"
+                  />
+                ) : (
+                  <p className="text-base md:text-lg">{profileData?.website || 'www.portfolio.com'}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Location</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editData.location}
+                    onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                    className="w-full p-2 bg-background border border-border rounded-lg focus:border-neon-blue outline-none"
+                  />
+                ) : (
+                  <p className="text-base md:text-lg">{profileData?.location || 'Location'}</p>
                 )}
               </div>
             </div>
-
-            {/* Login Link for Non-Authenticated Users */}
-            <ProtectedComponent
-              fallback={
-                <div className="text-center mt-8">
-                  <p className="text-muted-foreground mb-4">Want to edit this portfolio?</p>
-                  <Button 
-                    onClick={() => window.location.href = '/auth'}
-                    className="bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
-                  >
-                    Admin Login
-                  </Button>
-                </div>
-              }
-            />
           </div>
+
+          {/* About Me Section */}
+          <div className="bg-card/30 rounded-lg p-4 md:p-8 border border-border/50">
+            <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-neon-blue">About Me</h2>
+            <div className="space-y-4">
+              {isEditing ? (
+                <>
+                  {editData.about_me.map((paragraph, index) => (
+                    <div key={index} className="flex gap-2">
+                      <textarea
+                        value={paragraph}
+                        onChange={(e) => updateAboutParagraph(index, e.target.value)}
+                        rows={3}
+                        className="flex-1 p-3 bg-background border border-border rounded-lg focus:border-neon-blue outline-none resize-none"
+                        placeholder={`Paragraph ${index + 1}`}
+                      />
+                      {editData.about_me.length > 1 && (
+                        <button
+                          onClick={() => removeAboutParagraph(index)}
+                          className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    onClick={addAboutParagraph}
+                    className="mt-4 bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
+                    variant="outline"
+                  >
+                    Add Paragraph
+                  </Button>
+                </>
+              ) : (
+                profileData?.about_me?.map((paragraph, index) => (
+                  <p key={index} className="text-muted-foreground leading-relaxed text-base md:text-lg">
+                    {paragraph}
+                  </p>
+                )) || (
+                  <p className="text-muted-foreground leading-relaxed text-base md:text-lg">
+                    Welcome to my creative portfolio! I am a passionate digital artist and game designer with expertise in illustration, character design, and interactive media.
+                  </p>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Login Link for Non-Authenticated Users */}
+          <ProtectedComponent
+            fallback={
+              <div className="text-center">
+                <p className="text-muted-foreground mb-4">Want to edit your profile?</p>
+                <Button 
+                  onClick={() => window.location.href = '/auth'}
+                  className="bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
+                >
+                  Admin Login
+                </Button>
+              </div>
+            }
+          >
+            <></>
+          </ProtectedComponent>
         </div>
-      )}
+      </div>
     </div>
   );
 };
