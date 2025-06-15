@@ -1,15 +1,18 @@
-
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown, Edit, Save, X } from 'lucide-react';
 import { useSupabaseProfileData } from '../hooks/useSupabaseProfileData';
+import { useAuth } from '../hooks/useAuth';
+import ProtectedComponent from './ProtectedComponent';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
+import { Button } from './ui/button';
 
 const InfoSection: React.FC = () => {
   const [currentView, setCurrentView] = useState<'profile' | 'skills'>('profile');
   const [isEditing, setIsEditing] = useState(false);
   const { profileData, updateProfile, isLoading } = useSupabaseProfileData();
+  const { isAuthenticated } = useAuth();
   const [editData, setEditData] = useState(profileData);
 
   const toggleView = () => {
@@ -56,33 +59,35 @@ const InfoSection: React.FC = () => {
         </button>
       </div>
 
-      {/* Edit button */}
+      {/* Edit button - only show for authenticated users */}
       {currentView === 'profile' && (
-        <div className="fixed right-8 top-20 z-30">
-          {!isEditing ? (
-            <button
-              onClick={handleEditStart}
-              className="p-3 bg-card/80 backdrop-blur-sm rounded-full border border-neon-blue/30 hover:bg-neon-blue/20 transition-all duration-200"
-            >
-              <Edit className="text-neon-blue" size={20} />
-            </button>
-          ) : (
-            <div className="flex space-x-2">
+        <ProtectedComponent>
+          <div className="fixed right-8 top-20 z-30">
+            {!isEditing ? (
               <button
-                onClick={handleSave}
-                className="p-3 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 hover:bg-green-500/30 transition-all duration-200"
+                onClick={handleEditStart}
+                className="p-3 bg-card/80 backdrop-blur-sm rounded-full border border-neon-blue/30 hover:bg-neon-blue/20 transition-all duration-200"
               >
-                <Save className="text-green-500" size={20} />
+                <Edit className="text-neon-blue" size={20} />
               </button>
-              <button
-                onClick={handleCancel}
-                className="p-3 bg-red-500/20 backdrop-blur-sm rounded-full border border-red-500/30 hover:bg-red-500/30 transition-all duration-200"
-              >
-                <X className="text-red-500" size={20} />
-              </button>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleSave}
+                  className="p-3 bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 hover:bg-green-500/30 transition-all duration-200"
+                >
+                  <Save className="text-green-500" size={20} />
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="p-3 bg-red-500/20 backdrop-blur-sm rounded-full border border-red-500/30 hover:bg-red-500/30 transition-all duration-200"
+                >
+                  <X className="text-red-500" size={20} />
+                </button>
+              </div>
+            )}
+          </div>
+        </ProtectedComponent>
       )}
 
       {/* Profile View */}
@@ -169,7 +174,7 @@ const InfoSection: React.FC = () => {
         </div>
       )}
 
-      {/* Skills View - 保持原有的靜態內容和聯絡資訊編輯功能 */}
+      {/* Skills View */}
       {currentView === 'skills' && (
         <div className="slide-down p-6 md:p-12 min-h-screen">
           <div className="max-w-4xl mx-auto">
@@ -250,6 +255,21 @@ const InfoSection: React.FC = () => {
                 )}
               </div>
             </div>
+
+            {/* Login Link for Non-Authenticated Users */}
+            <ProtectedComponent
+              fallback={
+                <div className="text-center mt-8">
+                  <p className="text-muted-foreground mb-4">Want to edit this portfolio?</p>
+                  <Button 
+                    onClick={() => window.location.href = '/auth'}
+                    className="bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
+                  >
+                    Admin Login
+                  </Button>
+                </div>
+              }
+            />
           </div>
         </div>
       )}

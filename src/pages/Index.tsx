@@ -4,14 +4,17 @@ import CoverPage from '../components/CoverPage';
 import Sidebar from '../components/Sidebar';
 import InfoSection from '../components/InfoSection';
 import WorkSection from '../components/WorkSection';
+import AdminPanel from '../components/AdminPanel';
 import { useSupabasePortfolioData } from '../hooks/useSupabasePortfolioData';
 import { useGameDescription } from '../hooks/useGameDescription';
+import { useAuth } from '../hooks/useAuth';
 
 const Index = () => {
   const [showPortfolio, setShowPortfolio] = useState(false);
   const [activeSection, setActiveSection] = useState('info');
   const { portfolioData, updateSection, isLoading: portfolioLoading } = useSupabasePortfolioData();
   const { gameDescription, isLoading: gameDescLoading } = useGameDescription();
+  const { loading: authLoading } = useAuth();
 
   const handleEnter = () => {
     setShowPortfolio(true);
@@ -22,10 +25,15 @@ const Index = () => {
   };
 
   if (!showPortfolio) {
-    return <CoverPage onEnter={handleEnter} />;
+    return (
+      <>
+        <CoverPage onEnter={handleEnter} />
+        <AdminPanel />
+      </>
+    );
   }
 
-  if (portfolioLoading || gameDescLoading) {
+  if (portfolioLoading || gameDescLoading || authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-neon-blue text-lg">Loading portfolio...</div>
@@ -35,6 +43,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AdminPanel />
       <Sidebar activeSection={activeSection} onSectionChange={handleSectionChange} />
       
       {activeSection === 'info' && <InfoSection />}

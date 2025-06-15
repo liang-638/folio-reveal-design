@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Plus, Edit, Trash2, Upload, ImageIcon } from 'lucide-react';
+import { ChevronUp, ChevronDown, Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from './ui/button';
+import { useAuth } from '../hooks/useAuth';
+import ProtectedComponent from './ProtectedComponent';
 
 interface Work {
   id: string;
@@ -31,6 +33,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editingWork, setEditingWork] = useState<Work | null>(null);
   const [imageLoadErrors, setImageLoadErrors] = useState<Set<string>>(new Set());
+  const { isAuthenticated } = useAuth();
 
   const toggleView = () => {
     setCurrentView(prev => prev === 'description' ? 'works' : 'description');
@@ -167,14 +170,17 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                  section === 'awards' ? 'Certificates & Awards' : section}
               </h2>
               
-              <Button
-                onClick={handleAddWork}
-                className="flex items-center gap-2 bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
-                variant="outline"
-              >
-                <Plus size={16} />
-                <span className="hidden sm:inline">Add Work</span>
-              </Button>
+              {/* Add Work button - only show for authenticated users */}
+              <ProtectedComponent>
+                <Button
+                  onClick={handleAddWork}
+                  className="flex items-center gap-2 bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
+                  variant="outline"
+                >
+                  <Plus size={16} />
+                  <span className="hidden sm:inline">Add Work</span>
+                </Button>
+              </ProtectedComponent>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
@@ -196,32 +202,49 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                     </div>
                   </div>
                   
-                  {/* Edit/Delete buttons */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="flex gap-1">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditWork(work);
-                        }}
-                        className="p-1 bg-neon-blue/20 rounded hover:bg-neon-blue/30 backdrop-blur-sm"
-                      >
-                        <Edit size={14} className="text-neon-blue" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteWork(work.id);
-                        }}
-                        className="p-1 bg-red-500/20 rounded hover:bg-red-500/30 backdrop-blur-sm"
-                      >
-                        <Trash2 size={14} className="text-red-400" />
-                      </button>
+                  {/* Edit/Delete buttons - only show for authenticated users */}
+                  <ProtectedComponent>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditWork(work);
+                          }}
+                          className="p-1 bg-neon-blue/20 rounded hover:bg-neon-blue/30 backdrop-blur-sm"
+                        >
+                          <Edit size={14} className="text-neon-blue" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteWork(work.id);
+                          }}
+                          className="p-1 bg-red-500/20 rounded hover:bg-red-500/30 backdrop-blur-sm"
+                        >
+                          <Trash2 size={14} className="text-red-400" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </ProtectedComponent>
                 </div>
               ))}
             </div>
+
+            {/* Login Link for Non-Authenticated Users */}
+            <ProtectedComponent
+              fallback={
+                <div className="text-center mt-8">
+                  <p className="text-muted-foreground mb-4">Want to manage portfolio works?</p>
+                  <Button 
+                    onClick={() => window.location.href = '/auth'}
+                    className="bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 border border-neon-blue/30"
+                  >
+                    Admin Login
+                  </Button>
+                </div>
+              }
+            />
           </div>
         </div>
       )}
@@ -260,8 +283,8 @@ const WorkSection: React.FC<WorkSectionProps> = ({
         </div>
       )}
 
-      {/* Edit Work Modal */}
-      {isEditing && editingWork && (
+      {/* Edit Work Modal - only show for authenticated users */}
+      {isEditing && editingWork && isAuthenticated && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-card rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4 text-neon-blue">
@@ -299,7 +322,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                   className="w-full p-2 bg-background border border-border rounded-lg focus:border-neon-blue outline-none"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  貼上您的 Cloudinary 圖片 URL
+                  Paste your Cloudinary image URL
                 </p>
               </div>
 
