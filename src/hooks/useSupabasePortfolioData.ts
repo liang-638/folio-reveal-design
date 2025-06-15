@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast'; // 新增：引入 toast
 
 interface Work {
   id: string;
@@ -25,6 +26,7 @@ export const useSupabasePortfolioData = () => {
     awards: [],
   });
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast(); // 新增：獲取 toast 方法
 
   const fetchPortfolioData = async () => {
     try {
@@ -35,6 +37,11 @@ export const useSupabasePortfolioData = () => {
 
       if (error) {
         console.error('Error fetching portfolio data:', error);
+        toast({
+          title: '取得資料失敗',
+          description: error.message || '無法從資料庫獲取作品資料。',
+          variant: 'destructive',
+        });
         return;
       }
 
@@ -58,8 +65,13 @@ export const useSupabasePortfolioData = () => {
       });
 
       setPortfolioData(groupedData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching portfolio data:', error);
+      toast({
+        title: '取得資料失敗',
+        description: error.message || '無法從資料庫獲取作品資料。',
+        variant: 'destructive',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -92,10 +104,20 @@ export const useSupabasePortfolioData = () => {
   const updateSection = async (section: keyof PortfolioData, works: Omit<Work, 'sort_order'>[]) => {
     try {
       // 先刪除該分類的所有作品
-      await supabase
+      const { error: deleteError } = await supabase
         .from('portfolio_works')
         .delete()
         .eq('section', section);
+
+      if (deleteError) {
+        console.error('Error deleting old works:', deleteError);
+        toast({
+          title: '作品刪除失敗',
+          description: deleteError.message || '無法刪除原有作品',
+          variant: 'destructive',
+        });
+        return;
+      }
 
       // 添加新的作品
       const worksToInsert = works.map((work, index) => ({
@@ -107,16 +129,36 @@ export const useSupabasePortfolioData = () => {
       }));
 
       if (worksToInsert.length > 0) {
-        const { error } = await supabase
+        const { error: insertError } = await supabase
           .from('portfolio_works')
           .insert(worksToInsert);
 
-        if (error) {
-          console.error('Error updating portfolio data:', error);
+        if (insertError) {
+          console.error('Error updating portfolio data:', insertError);
+          toast({
+            title: '作品儲存失敗',
+            description: insertError.message || '作品新增過程遇到錯誤',
+            variant: 'destructive',
+          });
+          return;
         }
       }
-    } catch (error) {
+
+      toast({
+        title: '成功同步作品',
+        description: '已將更動資料儲存到後端',
+        variant: 'success',
+      });
+
+      // 實作增刪改後，立即獲取一次最新資料
+      await fetchPortfolioData();
+    } catch (error: any) {
       console.error('Error updating portfolio data:', error);
+      toast({
+        title: '作品同步失敗',
+        description: error.message || '資料同步過程遇到未知錯誤',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -126,3 +168,4 @@ export const useSupabasePortfolioData = () => {
     isLoading,
   };
 };
+
