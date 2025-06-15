@@ -105,7 +105,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                 <img
                   src="/lovable-uploads/c72f66de-4674-4abd-a8d7-05bdd0e80c54.png"
                   alt="Game Design Logo"
-                  className="max-h-32 w-auto object-contain"
+                  className="max-h-64 w-auto object-contain"
                   style={{ filter: 'drop-shadow(0 2px 16px #2224)' }}
                 />
               ) : (
@@ -132,7 +132,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
                 <img
                   src="/lovable-uploads/c72f66de-4674-4abd-a8d7-05bdd0e80c54.png"
                   alt="Game Design Logo"
-                  className="max-h-20 w-auto object-contain"
+                  className="max-h-40 w-auto object-contain"
                   style={{ filter: 'drop-shadow(0 2px 8px #2224)' }}
                 />
               ) : (
