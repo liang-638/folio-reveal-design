@@ -16,7 +16,6 @@ interface PortfolioData {
   character: Work[];
   game: Work[];
   awards: Work[];
-  animation: Work[]; // <-- ADDED THIS LINE
 }
 
 export const useSupabasePortfolioData = () => {
@@ -25,10 +24,9 @@ export const useSupabasePortfolioData = () => {
     character: [],
     game: [],
     awards: [],
-    animation: [], // <-- ADDED THIS LINE
   });
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+  const { toast } = useToast(); // 新增：獲取 toast 方法
 
   const fetchPortfolioData = async () => {
     try {
@@ -52,7 +50,6 @@ export const useSupabasePortfolioData = () => {
         character: [],
         game: [],
         awards: [],
-        animation: [], // <-- ADDED THIS LINE
       };
 
       data?.forEach((work) => {
@@ -171,3 +168,4 @@ export const useSupabasePortfolioData = () => {
     isLoading,
   };
 };
+
