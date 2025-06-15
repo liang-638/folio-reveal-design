@@ -147,7 +147,7 @@ export const useSupabasePortfolioData = () => {
       toast({
         title: '成功同步作品',
         description: '已將更動資料儲存到後端',
-        variant: 'success',
+        variant: 'default',
       });
 
       // 實作增刪改後，立即獲取一次最新資料
