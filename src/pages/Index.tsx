@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import CoverPage from '../components/CoverPage';
 import Sidebar from '../components/Sidebar';
@@ -40,40 +39,44 @@ const Index = () => {
       {activeSection === 'info' && <InfoSection />}
       
       {activeSection === 'illustration' && (
-        <WorkSection 
-          section="illustration" 
+        <WorkSection
+          section="illustration"
           works={portfolioData.illustration}
-          maxWorks={6}
-          onWorksUpdate={(works) => updateSection('illustration', works)}
+          maxWorks={8}
         />
       )}
       
       {activeSection === 'character' && (
-        <WorkSection 
-          section="character" 
+        <WorkSection
+          section="character"
           works={portfolioData.character}
-          maxWorks={6}
-          onWorksUpdate={(works) => updateSection('character', works)}
+          maxWorks={8}
         />
       )}
       
       {activeSection === 'game' && (
-        <WorkSection 
-          section="game" 
+        <WorkSection
+          section="game"
           works={portfolioData.game}
           maxWorks={4}
           hasDescription={true}
           gameDescription={gameDescription}
-          onWorksUpdate={(works) => updateSection('game', works)}
+        />
+      )}
+      
+      {activeSection === 'animation' && (
+        <WorkSection
+          section="animation"
+          works={portfolioData.animation || []}
+          maxWorks={2}
         />
       )}
       
       {activeSection === 'awards' && (
-        <WorkSection 
-          section="awards" 
+        <WorkSection
+          section="awards"
           works={portfolioData.awards}
           maxWorks={4}
-          onWorksUpdate={(works) => updateSection('awards', works)}
         />
       )}
     </div>
