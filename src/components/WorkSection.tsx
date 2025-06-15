@@ -1,6 +1,10 @@
+
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Plus, Edit, Trash2, Upload, ImageIcon } from 'lucide-react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
+import WorkSectionLogo from './WorkSectionLogo';
+import WorkCard from './WorkCard';
+import WorkDetailModal from './WorkDetailModal';
 
 interface Work {
   id: string;
@@ -52,7 +56,7 @@ const WorkSection: React.FC<WorkSectionProps> = ({
     const hasError = imageLoadErrors.has(work.id);
     const hasImage = work.image && work.image.trim() !== '';
     const sizeClass = isModal ? 'w-full h-full' : 'w-full h-full';
-    
+
     if (hasImage && !hasError) {
       return (
         <img
@@ -64,16 +68,16 @@ const WorkSection: React.FC<WorkSectionProps> = ({
         />
       );
     }
-    
-    // Fallback to icon
+
+    // fallback icon
     return (
       <div className={`${sizeClass} bg-gradient-to-br from-neon-blue/20 to-accent/20 flex items-center justify-center`}>
         <div className="text-4xl md:text-6xl opacity-50 group-hover:opacity-70 transition-opacity">
           {section === 'illustration' ? '🎨' :
-           section === 'character' ? '👤' :
-           section === 'game' ? '🎮' :
-           section === 'animation' ? '🎬' :
-           section === 'awards' ? '🏆' : '📁'}
+            section === 'character' ? '👤' :
+              section === 'game' ? '🎮' :
+                section === 'animation' ? '🎬' :
+                  section === 'awards' ? '🏆' : '📁'}
         </div>
       </div>
     );
@@ -99,20 +103,8 @@ const WorkSection: React.FC<WorkSectionProps> = ({
       {hasDescription && currentView === 'description' && (
         <div className="slide-up p-4 md:p-12 flex items-center justify-center min-h-screen">
           <div className="max-w-3xl w-full">
-            {/* 用圖片替換 Game Design 標題 */}
             <div className="flex justify-center items-center mb-6 md:mb-8">
-              {section === 'game' ? (
-                <img
-                  src="/lovable-uploads/c72f66de-4674-4abd-a8d7-05bdd0e80c54.png"
-                  alt="Game Design Logo"
-                  className="max-h-64 w-auto object-contain"
-                  style={{ filter: 'drop-shadow(0 2px 16px #2224)' }}
-                />
-              ) : (
-                <h2 className="text-2xl md:text-4xl font-semibold text-center text-neon-blue">
-                  {section}
-                </h2>
-              )}
+              <WorkSectionLogo section={section} className={section === 'game' ? 'max-h-64 w-auto' : 'text-2xl md:text-4xl'} style={section === 'game' ? { filter: 'drop-shadow(0 2px 16px #2224)' } : undefined} />
             </div>
             <div className="bg-card/50 backdrop-blur-sm rounded-lg p-4 md:p-8 border border-border">
               <p className="text-muted-foreground leading-relaxed text-base md:text-lg">
@@ -128,48 +120,17 @@ const WorkSection: React.FC<WorkSectionProps> = ({
         <div className="slide-down p-4 md:p-12 min-h-screen">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8 md:mb-12">
-              {section === 'game' ? (
-                <img
-                  src="/lovable-uploads/c72f66de-4674-4abd-a8d7-05bdd0e80c54.png"
-                  alt="Game Design Logo"
-                  className="max-h-40 w-auto object-contain"
-                  style={{ filter: 'drop-shadow(0 2px 8px #2224)' }}
-                />
-              ) : (
-                <h2 className="text-xl md:text-3xl font-semibold text-neon-blue capitalize">
-                  {section === 'illustration'
-                    ? 'Illustration Design'
-                    : section === 'character'
-                    ? 'Character Design'
-                    : section === 'game'
-                    ? 'Game Projects'
-                    : section === 'animation'
-                    ? 'Animation Works'
-                    : section === 'awards'
-                    ? 'Certificates & Awards'
-                    : section}
-                </h2>
-              )}
+              <WorkSectionLogo section={section} className={section === 'game' ? 'max-h-40 w-auto' : 'text-xl md:text-3xl'} style={section === 'game' ? { filter: 'drop-shadow(0 2px 8px #2224)' } : undefined} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
               {displayWorks.map((work) => (
-                <div
+                <WorkCard
                   key={work.id}
-                  className="relative aspect-video bg-card/30 rounded-lg border border-border/50 cursor-pointer hover:border-neon-blue/50 transition-all duration-300 hover:scale-105 overflow-hidden group"
-                >
-                  <div 
-                    className="w-full h-full relative"
-                    onClick={() => setSelectedWork(work)}
-                  >
-                    {renderWorkImage(work)}
-
-                    {/* Overlay with title */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <p className="text-xs md:text-sm text-white font-medium truncate">{work.title}</p>
-                    </div>
-                  </div>
-                </div>
+                  work={work}
+                  section={section}
+                  onSelect={setSelectedWork}
+                  renderWorkImage={renderWorkImage}
+                />
               ))}
             </div>
           </div>
@@ -178,36 +139,11 @@ const WorkSection: React.FC<WorkSectionProps> = ({
 
       {/* Work Detail Modal */}
       {selectedWork && (
-        <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-8"
-          onClick={() => setSelectedWork(null)}
-        >
-          <div 
-            className="max-w-5xl w-full bg-card rounded-lg overflow-hidden fade-in"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-3">
-              {/* Image */}
-              <div className="lg:col-span-2 max-h-[70vh] flex items-center justify-center bg-black/20">
-                {renderWorkImage(selectedWork, true)}
-              </div>
-              <div className="p-4 md:p-8 flex flex-col justify-center">
-                <h3 className="text-xl md:text-2xl font-semibold mb-4 text-neon-blue">
-                  {selectedWork.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed mb-6 text-sm md:text-base">
-                  {selectedWork.description}
-                </p>
-                <button
-                  onClick={() => setSelectedWork(null)}
-                  className="self-start px-4 md:px-6 py-2 bg-neon-blue/20 text-neon-blue rounded-lg hover:bg-neon-blue/30 transition-colors text-sm md:text-base"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <WorkDetailModal
+          work={selectedWork}
+          onClose={() => setSelectedWork(null)}
+          renderWorkImage={renderWorkImage}
+        />
       )}
     </div>
   );
