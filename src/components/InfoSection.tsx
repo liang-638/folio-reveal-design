@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import ProtectedComponent from './ProtectedComponent';
 
 const InfoSection: React.FC = () => {
-  const { profileData, updateProfileData, isLoading } = useSupabaseProfileData();
+  const { profileData, updateProfile, isLoading } = useSupabaseProfileData();
   const { isAuthenticated } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
@@ -15,7 +15,7 @@ const InfoSection: React.FC = () => {
     email: '',
     website: '',
     location: '',
-    about_me: ['']
+    aboutMe: ['']
   });
 
   React.useEffect(() => {
@@ -26,7 +26,7 @@ const InfoSection: React.FC = () => {
         email: profileData.email || '',
         website: profileData.website || '',
         location: profileData.location || '',
-        about_me: profileData.about_me || ['']
+        aboutMe: profileData.aboutMe || ['']
       });
     }
   }, [profileData]);
@@ -36,7 +36,7 @@ const InfoSection: React.FC = () => {
   };
 
   const handleSave = async () => {
-    await updateProfileData(editData);
+    await updateProfile(editData);
     setIsEditing(false);
   };
 
@@ -48,26 +48,26 @@ const InfoSection: React.FC = () => {
         email: profileData.email || '',
         website: profileData.website || '',
         location: profileData.location || '',
-        about_me: profileData.about_me || ['']
+        aboutMe: profileData.aboutMe || ['']
       });
     }
     setIsEditing(false);
   };
 
   const updateAboutParagraph = (index: number, value: string) => {
-    const newAbout = [...editData.about_me];
+    const newAbout = [...editData.aboutMe];
     newAbout[index] = value;
-    setEditData({ ...editData, about_me: newAbout });
+    setEditData({ ...editData, aboutMe: newAbout });
   };
 
   const addAboutParagraph = () => {
-    setEditData({ ...editData, about_me: [...editData.about_me, ''] });
+    setEditData({ ...editData, aboutMe: [...editData.aboutMe, ''] });
   };
 
   const removeAboutParagraph = (index: number) => {
-    if (editData.about_me.length > 1) {
-      const newAbout = editData.about_me.filter((_, i) => i !== index);
-      setEditData({ ...editData, about_me: newAbout });
+    if (editData.aboutMe.length > 1) {
+      const newAbout = editData.aboutMe.filter((_, i) => i !== index);
+      setEditData({ ...editData, aboutMe: newAbout });
     }
   };
 
@@ -202,7 +202,7 @@ const InfoSection: React.FC = () => {
             <div className="space-y-4">
               {isEditing ? (
                 <>
-                  {editData.about_me.map((paragraph, index) => (
+                  {editData.aboutMe.map((paragraph, index) => (
                     <div key={index} className="flex gap-2">
                       <textarea
                         value={paragraph}
@@ -211,7 +211,7 @@ const InfoSection: React.FC = () => {
                         className="flex-1 p-3 bg-background border border-border rounded-lg focus:border-neon-blue outline-none resize-none"
                         placeholder={`Paragraph ${index + 1}`}
                       />
-                      {editData.about_me.length > 1 && (
+                      {editData.aboutMe.length > 1 && (
                         <button
                           onClick={() => removeAboutParagraph(index)}
                           className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg"
@@ -230,7 +230,7 @@ const InfoSection: React.FC = () => {
                   </Button>
                 </>
               ) : (
-                profileData?.about_me?.map((paragraph, index) => (
+                profileData?.aboutMe?.map((paragraph, index) => (
                   <p key={index} className="text-muted-foreground leading-relaxed text-base md:text-lg">
                     {paragraph}
                   </p>
