@@ -11,45 +11,39 @@ const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
       className="min-h-screen bg-black flex items-center justify-center cursor-pointer relative overflow-hidden"
       onClick={onEnter}
     >
-      {/* Top curved line */}
+      {/* Top straight blue line */}
       <div className="absolute top-8 left-0 w-full">
-        <svg width="100%" height="40" className="text-blue-500">
-          <path 
-            d="M 80 30 Q 400 5 800 25 Q 1200 35 1600 20" 
-            stroke="currentColor" 
-            strokeWidth="3" 
-            fill="none"
-          />
-        </svg>
+        <div className="w-full h-0.5 bg-blue-500"></div>
       </div>
 
-      {/* Top right squares */}
+      {/* Top right squares (without extra blue lines) */}
       <div className="absolute top-12 right-16 flex space-x-3">
         <div className="w-8 h-6 bg-blue-500 rounded-sm"></div>
         <div className="w-8 h-6 bg-blue-500 rounded-sm"></div>
         <div className="w-8 h-6 bg-blue-500 rounded-sm"></div>
-        <div className="w-16 h-1 bg-blue-500 mt-3"></div>
       </div>
 
-      {/* Left side geometric shapes */}
-      <div className="absolute left-0 top-1/4">
-        {/* Large blue circular shape */}
-        <div className="w-96 h-96 relative">
-          <div className="absolute inset-0 bg-blue-600 rounded-full opacity-80"></div>
-          <div className="absolute inset-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full opacity-90"></div>
+      {/* Left bottom wave-like geometric shapes */}
+      <div className="absolute left-0 bottom-0 overflow-hidden">
+        {/* First wave layer - closest to bottom */}
+        <div className="relative">
+          <div className="absolute bottom-8 left-8 w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full opacity-80"></div>
+          <div className="absolute bottom-16 left-20 w-28 h-28 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full opacity-70"></div>
+          <div className="absolute bottom-24 left-32 w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full opacity-75"></div>
         </div>
         
-        {/* Overlapping curved shapes */}
-        <div className="absolute top-32 left-32">
-          <div className="w-80 h-64 bg-gradient-to-r from-gray-400 to-gray-300 rounded-full opacity-70 transform rotate-12"></div>
+        {/* Second wave layer */}
+        <div className="relative">
+          <div className="absolute bottom-32 left-16 w-36 h-36 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full opacity-60"></div>
+          <div className="absolute bottom-40 left-28 w-32 h-32 bg-gradient-to-br from-gray-300 to-gray-500 rounded-full opacity-50"></div>
+          <div className="absolute bottom-48 left-40 w-28 h-28 bg-gradient-to-br from-gray-500 to-gray-700 rounded-full opacity-65"></div>
         </div>
         
-        <div className="absolute top-48 left-16">
-          <div className="w-72 h-56 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full opacity-60 transform -rotate-6"></div>
-        </div>
-        
-        <div className="absolute bottom-32 left-8">
-          <div className="w-64 h-48 bg-gradient-to-r from-purple-600 to-purple-800 rounded-full opacity-75 transform rotate-3"></div>
+        {/* Third wave layer - highest */}
+        <div className="relative">
+          <div className="absolute bottom-56 left-24 w-40 h-40 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full opacity-70"></div>
+          <div className="absolute bottom-64 left-36 w-36 h-36 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full opacity-60"></div>
+          <div className="absolute bottom-72 left-48 w-32 h-32 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full opacity-75"></div>
         </div>
       </div>
 
@@ -80,15 +74,6 @@ const CoverPage: React.FC<CoverPageProps> = ({ onEnter }) => {
       {/* Bottom right decorative elements */}
       <div className="absolute bottom-16 right-16">
         <div className="w-32 h-32 border-2 border-blue-400 bg-transparent opacity-30"></div>
-      </div>
-
-      {/* Additional floating geometric elements */}
-      <div className="absolute top-1/3 right-1/4">
-        <div className="w-2 h-16 bg-blue-400 opacity-40 transform rotate-12"></div>
-      </div>
-      
-      <div className="absolute bottom-1/3 right-1/3">
-        <div className="w-12 h-2 bg-purple-400 opacity-50"></div>
       </div>
 
       {/* Grid pattern overlay */}
